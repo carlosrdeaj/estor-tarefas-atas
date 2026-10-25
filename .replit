@@ -1,0 +1,32 @@
+# Nexo — um processo Node (API + interface) na porta PORT, padrão 5000.
+run = "npm run dev"
+entrypoint = "server/index.ts"
+modules = ["nodejs-22"]
+
+[nix]
+channel = "stable-24_11"
+
+[env]
+PORT = "5000"
+APP_TIMEZONE = "America/Sao_Paulo"
+
+[deployment]
+deploymentTarget = "cloudrun"
+build = ["sh", "-c", "npm ci && npm run build"]
+run = ["npm", "run", "start:server"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[workflows]
+runButton = "Nexo"
+
+[[workflows.workflow]]
+name = "Nexo"
+author = "agent"
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
